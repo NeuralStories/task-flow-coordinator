@@ -1,7 +1,7 @@
 export interface Task {
   id: string;
   title: string;
-  type: 'measure' | 'checklist' | 'photo';
+  type: 'measure' | 'checklist' | 'photo' | 'multi_measure';
   desc: string;
   requiredParams?: string[];
   options?: string[];

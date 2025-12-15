@@ -4,7 +4,10 @@ import { Job, MY_JOBS_MOCK } from '../types';
 interface JobContextType {
   jobs: Job[];
   addJob: (job: Job) => void;
+  updateJob: (job: Job) => void;
   deleteJob: (id: number) => void;
+  aiEnabled: boolean;
+  toggleAI: () => void;
 }
 
 const JobContext = createContext<JobContextType | undefined>(undefined);
@@ -16,6 +19,8 @@ export const JobProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return savedJobs ? JSON.parse(savedJobs) : MY_JOBS_MOCK;
   });
 
+  const [aiEnabled, setAiEnabled] = useState(true);
+
   useEffect(() => {
     localStorage.setItem('field_app_jobs', JSON.stringify(jobs));
   }, [jobs]);
@@ -24,12 +29,20 @@ export const JobProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setJobs(prev => [...prev, job]);
   };
 
+  const updateJob = (updatedJob: Job) => {
+    setJobs(prev => prev.map(job => job.id === updatedJob.id ? updatedJob : job));
+  };
+
   const deleteJob = (id: number) => {
     setJobs(prev => prev.filter(j => j.id !== id));
   };
 
+  const toggleAI = () => {
+    setAiEnabled(prev => !prev);
+  };
+
   return (
-    <JobContext.Provider value={{ jobs, addJob, deleteJob }}>
+    <JobContext.Provider value={{ jobs, addJob, updateJob, deleteJob, aiEnabled, toggleAI }}>
       {children}
     </JobContext.Provider>
   );

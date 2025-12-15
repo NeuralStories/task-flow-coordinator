@@ -36,7 +36,7 @@ export default function App() {
           <div className="bg-white w-full h-full md:max-w-md lg:max-w-5xl md:h-[850px] md:rounded-[2rem] shadow-none md:shadow-2xl overflow-hidden flex flex-col md:flex-row relative">
             
             {/* Lado Izquierdo (Móvil: Interfaz Principal) */}
-            <div className="w-full md:w-1/2 lg:w-[60%] flex flex-col relative z-10 bg-white h-full">
+            <div className="w-full md:w-1/2 lg:w-[60%] flex flex-col relative z-10 bg-white h-full max-h-full">
                 
                 {/* Header Móvil */}
                 <div className="h-16 bg-[#803746] text-white flex items-center justify-between px-6 shadow-md shrink-0 z-20">
@@ -55,19 +55,19 @@ export default function App() {
                         >
                           <Info size={18} />
                         </button>
-                        {/* Secret Admin Button */}
+                        {/* Admin Button - Made visible */}
                         <button 
                             onClick={() => setView('admin')}
-                            className="text-white/30 hover:text-white transition-colors"
+                            className="p-1.5 bg-white/10 rounded-lg hover:bg-white/20 text-white transition-colors"
                             title="Ir al Backend (Admin)"
                         >
-                            <Settings size={16} />
+                            <Settings size={18} />
                         </button>
                     </div>
                 </div>
 
-                {/* Vistas Dinámicas */}
-                <div className="flex-1 overflow-hidden relative">
+                {/* Vistas Dinámicas - min-h-0 is crucial for nested flex scrolling */}
+                <div className="flex-1 overflow-hidden relative min-h-0 flex flex-col">
                     {view === 'selection' && <JobSelection onSelectJob={handleSelectJob} />}
                     {view === 'detail' && activeJob && <JobDetail job={activeJob} onStart={() => setView('sequence')} onBack={handleBackToSelection} />}
                     {view === 'sequence' && activeJob && <TaskSequence job={activeJob} onBack={() => setView('detail')} onCompleteAll={() => setView('completed')} />}

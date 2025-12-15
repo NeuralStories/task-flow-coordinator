@@ -16,8 +16,8 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
   const allMaterials = Array.from(new Set(jobs.flatMap(job => job.materials)));
 
   return (
-    <div className="flex flex-col h-full animate-fadeIn p-6">
-      <div className="mb-6">
+    <div className="flex flex-col h-full w-full animate-fadeIn p-6">
+      <div className="mb-6 shrink-0">
         <h1 className="text-3xl font-bold text-gray-900 leading-tight mb-2">
           Hola, Operador
         </h1>
@@ -26,7 +26,7 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 space-y-6">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 space-y-6 min-h-0">
         
         {/* SECCIÓN: RESUMEN DE CARGA Y EQUIPO */}
         <div className="space-y-4">
