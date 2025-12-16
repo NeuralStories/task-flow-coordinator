@@ -11,7 +11,8 @@ import {
   ArrowRight,
   PauseCircle,
   XCircle,
-  Clock
+  Clock,
+  Image as ImageIcon
 } from 'lucide-react';
 import { Job } from '../types';
 import { ProgressBar } from './ProgressBar';
@@ -41,8 +42,10 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
   // Camera Refs and State
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // Fallback input
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [cameraError, setCameraError] = useState(false);
 
   const currentTask = job.tasks[currentIndex];
   const isLast = currentIndex === job.tasks.length - 1;
@@ -52,6 +55,7 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
     setCurrentData({ width: '', height: '', depth: '', selection: '', photo: null, multiMeasures: Array(8).fill('') });
     setStatus('idle');
     setAiFeedback('');
+    setCameraError(false);
     stopCamera();
   }, [currentIndex]);
 
@@ -63,6 +67,7 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
   }, []);
 
   const startCamera = async () => {
+    setCameraError(false);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } // Prefer back camera on mobile
@@ -77,7 +82,11 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
       }, 100);
     } catch (err) {
       console.error("Error accessing camera:", err);
-      alert("No se pudo acceder a la cámara. Verifique los permisos.");
+      setCameraError(true);
+      // Fallback: Trigger file input click if camera fails
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
     }
   };
 
@@ -104,6 +113,17 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
             setCurrentData(prev => ({ ...prev, photo: dataUrl }));
             stopCamera();
         }
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCurrentData(prev => ({ ...prev, photo: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -167,6 +187,16 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
       
       {/* Hidden Canvas for Camera Capture */}
       <canvas ref={canvasRef} className="hidden"></canvas>
+      
+      {/* Hidden File Input for Fallback */}
+      <input 
+        type="file" 
+        accept="image/*" 
+        capture="environment"
+        ref={fileInputRef} 
+        className="hidden"
+        onChange={handleFileUpload}
+      />
 
       {/* Camera Overlay */}
       {isCameraOpen && (
@@ -294,18 +324,29 @@ export const TaskSequence: React.FC<TaskSequenceProps> = ({ job, onBack, onCompl
                     <p className="text-gray-500 font-bold text-sm">Procesando imagen...</p>
                   </div>
                 ) : (
-                  <button 
-                    onClick={startCamera}
-                    className="w-full h-64 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center text-gray-400 hover:bg-gray-50 hover:border-[#803746] hover:text-[#803746] transition-all gap-4 group bg-white active:scale-[0.98]"
-                  >
-                    <div className="bg-gray-100 p-5 rounded-full group-hover:bg-[#803746]/10 transition-colors">
-                      <Camera size={40} className="opacity-60 group-hover:opacity-100 transition-opacity"/>
-                    </div>
-                    <div className="text-center">
-                      <span className="block font-bold text-sm uppercase tracking-wide mb-1">Abrir Cámara</span>
-                      <span className="text-xs text-gray-400 font-normal group-hover:text-[#803746]/60">Tomar foto y adjuntar</span>
-                    </div>
-                  </button>
+                  <div className="flex flex-col gap-3">
+                      {/* Main Camera Button */}
+                      <button 
+                        onClick={startCamera}
+                        className="w-full h-48 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center text-gray-400 hover:bg-gray-50 hover:border-[#803746] hover:text-[#803746] transition-all gap-4 group bg-white active:scale-[0.98]"
+                      >
+                        <div className="bg-gray-100 p-4 rounded-full group-hover:bg-[#803746]/10 transition-colors">
+                          <Camera size={32} className="opacity-60 group-hover:opacity-100 transition-opacity"/>
+                        </div>
+                        <div className="text-center">
+                          <span className="block font-bold text-sm uppercase tracking-wide mb-1">Abrir Cámara</span>
+                          {cameraError && <span className="text-xs text-red-500 font-bold">Error de acceso. Intenta subir archivo.</span>}
+                        </div>
+                      </button>
+
+                      {/* Secondary Upload Button (Visible fallback or option) */}
+                      <button 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full py-3 bg-gray-50 text-gray-500 rounded-xl text-xs font-bold border border-gray-200 hover:bg-gray-100 flex items-center justify-center gap-2"
+                      >
+                         <ImageIcon size={16} /> Subir desde Galería
+                      </button>
+                  </div>
                 )
               ) : (
                 <div className="relative rounded-2xl overflow-hidden border border-gray-200 shadow-md group">

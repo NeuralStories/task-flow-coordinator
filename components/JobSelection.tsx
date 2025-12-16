@@ -16,8 +16,8 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
   const allMaterials = Array.from(new Set(jobs.flatMap(job => job.materials)));
 
   return (
-    <div className="flex flex-col h-full w-full animate-fadeIn p-6">
-      <div className="mb-6 shrink-0">
+    <div className="flex flex-col h-full w-full animate-fadeIn p-4 md:p-6 overflow-hidden">
+      <div className="mb-6 shrink-0 pt-2">
         <h1 className="text-3xl font-bold text-gray-900 leading-tight mb-2">
           Hola, Operador
         </h1>
@@ -26,14 +26,14 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 space-y-6 min-h-0">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pb-8 space-y-6 min-h-0 px-1">
         
         {/* SECCIÓN: RESUMEN DE CARGA Y EQUIPO */}
         <div className="space-y-4">
           {/* Acordeón de Materiales */}
           <button 
             onClick={() => setShowMaterials(!showMaterials)}
-            className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between group"
+            className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between group transition-all active:scale-[0.98]"
           >
             <div className="flex items-center gap-3">
               <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
@@ -48,12 +48,15 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
           </button>
           
           {showMaterials && (
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 animate-fadeIn">
-              <h4 className="text-xs font-bold text-gray-400 uppercase mb-3">Material Requerido en Vehículo:</h4>
+            <div className="bg-white/50 p-4 rounded-xl border border-gray-200/60 animate-fadeIn">
+              <h4 className="text-xs font-bold text-gray-500 uppercase mb-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div> 
+                Material en Vehículo
+              </h4>
               <ul className="grid grid-cols-1 gap-2">
                 {allMaterials.map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-white p-2 rounded-lg border border-gray-100">
-                    <div className="w-1.5 h-1.5 bg-[#803746] rounded-full"></div>
+                  <li key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                    <div className="w-1.5 h-1.5 bg-[#803746] rounded-full shrink-0"></div>
                     {item}
                   </li>
                 ))}
@@ -90,7 +93,7 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
                 {!toolsChecked && (
                   <button 
                     onClick={() => setToolsChecked(true)}
-                    className="w-full bg-orange-600 text-white py-3 px-6 rounded-xl text-sm font-bold shadow-lg shadow-orange-200 active:scale-95 transition-all"
+                    className="w-full bg-orange-600 text-white py-3.5 px-6 rounded-xl text-sm font-bold shadow-lg shadow-orange-200 active:scale-95 transition-all hover:bg-orange-700"
                   >
                     Confirmar Carga
                   </button>
@@ -101,12 +104,12 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
         </div>
 
         {/* LISTA DE TAREAS (Dinámica) */}
-        <div className="space-y-4">
+        <div className="space-y-4 pb-4">
           <h3 className="font-bold text-gray-400 text-xs uppercase tracking-widest pl-1 mt-2">
             Asignaciones ({jobs.length})
           </h3>
           {jobs.length === 0 && (
-            <div className="text-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+            <div className="text-center p-8 bg-white/50 rounded-xl border border-dashed border-gray-300">
                 <p className="text-gray-400 text-sm">No hay órdenes asignadas por el despacho.</p>
             </div>
           )}
@@ -115,7 +118,7 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
               key={job.id}
               onClick={() => onSelectJob(job)}
               disabled={!toolsChecked}
-              className={`w-full bg-white p-6 rounded-2xl border shadow-sm transition-all text-left group relative overflow-hidden active:scale-[0.98] ${
+              className={`w-full bg-white p-5 md:p-6 rounded-2xl border shadow-sm transition-all text-left group relative overflow-hidden active:scale-[0.98] ${
                 toolsChecked 
                   ? 'border-gray-100 hover:shadow-md hover:border-[#803746]/30 opacity-100 cursor-pointer' 
                   : 'border-gray-100 opacity-60 cursor-not-allowed grayscale-[0.5]'
@@ -125,13 +128,13 @@ export const JobSelection: React.FC<JobSelectionProps> = ({ onSelectJob }) => {
               
               <div className="flex justify-between items-start mb-3 pl-3">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1 mb-1">
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1 mb-1">
                     <Calendar size={12} /> {job.date}
                   </span>
-                  <h3 className="font-bold text-gray-800 text-xl leading-tight">{job.site}</h3>
+                  <h3 className="font-bold text-gray-800 text-lg sm:text-xl leading-tight line-clamp-1">{job.site}</h3>
                 </div>
                 {job.priority === 'high' && (
-                  <span className="bg-red-50 text-red-700 text-[10px] font-bold px-3 py-1 rounded-full border border-red-100">
+                  <span className="bg-red-50 text-red-700 text-[9px] sm:text-[10px] font-bold px-2 sm:px-3 py-1 rounded-full border border-red-100 shrink-0">
                     PRIORITARIO
                   </span>
                 )}
