@@ -12,7 +12,7 @@ El sistema se destaca por su capacidad de **validación contextual**, guiando al
 
 ---
 
-## 🏗️ Arquitectura y Stack Tecnológico
+## Arquitectura y Stack Tecnológico
 
 El proyecto está construido sobre un stack moderno, priorizando el rendimiento y la seguridad de tipos (Type-Safety).
 
@@ -31,11 +31,11 @@ El proyecto está construido sobre un stack moderno, priorizando el rendimiento 
 
 ---
 
-## 🚀 Funcionalidades Detalladas
+## Funcionalidades Detalladas
 
 La aplicación se divide en dos entornos operativos integrados en una misma SPA (Single Page Application):
 
-### 1. 📱 App del Operador (Field Interface)
+### 1. App del Operador (Field Interface)
 Optimizada para uso táctil en tablets y móviles.
 * **Job Selection:** Visualización de tarjetas de trabajo con metadatos críticos (Sitio, Prioridad, Distancia).
 * **Job Detail View:**
@@ -48,7 +48,7 @@ Optimizada para uso táctil en tablets y móviles.
     * Soporte para tareas tipo `checklist` (Selección de opciones).
 * **Modo Offline Simulado:** Indicadores de estado de red y sincronización.
 
-### 2. 🖥️ Dashboard del Despachador (Backend Admin)
+### 2. Dashboard del Despachador (Backend Admin)
 Interfaz de escritorio para la gestión de flotas y tareas.
 * **Gestión de Órdenes (CRUD):**
     * Creación dinámica de trabajos.
@@ -61,7 +61,7 @@ Interfaz de escritorio para la gestión de flotas y tareas.
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 El código fuente se organiza siguiendo patrones de diseño modular:
 
